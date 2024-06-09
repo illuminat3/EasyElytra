@@ -10,4 +10,4 @@ This mod requires [Fabric Api](https://www.curseforge.com/minecraft/mc-mods/fabr
 
 ## Download
 
-[Easy Elytra](https://github.com/illuminat3/EasyElytra/releases)
+Download Easy Elytra [here](https://github.com/illuminat3/EasyElytra/releases)
