@@ -1,0 +1,10 @@
+modLoader = "fabric"
+loaderVersion = "[>=0.12.5]"
+license = "MIT"
+[[mods]]
+modId = "easyelytra"
+version = "1.0.0"
+displayName = "Easy Elytra"
+description = "A mod that allows you to control the Elytra mid-flight without using fireworks."
+authors = ["illuminat3"]
+contact = { homepage = "https://github.com/illuminat3", sources = "https://github.com/illuminat3/EasyElytra" }
