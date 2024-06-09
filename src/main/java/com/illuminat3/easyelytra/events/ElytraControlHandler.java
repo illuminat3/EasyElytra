@@ -14,7 +14,6 @@ public class ElytraControlHandler {
     private static final double speed = 0.05;
 
     private static void controlElytra(ClientPlayerEntity player) {
-
         double maxSpeed = 2.5;
 
         if (player.input.pressingForward) {
