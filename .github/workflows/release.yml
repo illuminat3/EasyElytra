@@ -19,6 +19,12 @@ jobs:
         distribution: 'adopt'
         java-version: '11'
 
+    - name: Install dos2unix
+      run: sudo apt-get install dos2unix
+
+    - name: Convert line endings
+      run: dos2unix gradlew
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
