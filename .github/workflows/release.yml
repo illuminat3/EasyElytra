@@ -63,7 +63,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.PAT }}
       with:
         tag_name: v${{ github.run_number }}
-        release_name: Easy Elytra ${{ github.run_number }}
+        release_name: Easy Elytra X.X.X
         draft: true
         prerelease: false
 
