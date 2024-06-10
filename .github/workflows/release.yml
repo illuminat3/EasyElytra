@@ -31,6 +31,9 @@ jobs:
     - name: Build the mod
       run: ./gradlew build
 
+    - name: List build directory
+      run: ls -R build/libs
+
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -54,7 +57,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT }} 
+        GITHUB_TOKEN: ${{ secrets.PAT }}
       with:
         tag_name: v${{ github.run_number }}
         release_name: Release ${{ github.run_number }}
@@ -67,6 +70,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.PAT }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/*.jar
+        asset_path: build/libs/EasyElytra-1.0.0+mc1.20.6.jar
         asset_name: EasyElytra-1.0.0+mc1.20.6.jar
         asset_content_type: application/java-archive
