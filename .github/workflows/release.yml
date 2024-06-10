@@ -53,6 +53,9 @@ jobs:
       with:
         name: mod-artifact
 
+    - name: List downloaded artifacts
+      run: ls -R .
+
     - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
@@ -70,6 +73,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.PAT }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/EasyElytra-1.0.0.jar
+        asset_path: EasyElytra-1.0.0.jar
         asset_name: EasyElytra-1.0.0.jar
         asset_content_type: application/java-archive
