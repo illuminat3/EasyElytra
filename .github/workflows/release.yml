@@ -40,22 +40,22 @@ jobs:
         name: mod-artifact
         path: build/libs/*.jar
 
-  create-release:
+  name: create-release
     needs: build
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
+    
     - name: Download build artifacts
       uses: actions/download-artifact@v2
       with:
         name: mod-artifact
-
+    
     - name: List downloaded artifacts
       run: ls -R .
-
+    
     - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
@@ -66,13 +66,27 @@ jobs:
         release_name: Easy Elytra X.X.X
         draft: true
         prerelease: false
-
+    
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: EasyElytra-1.0.0.jar
+        asset_name: EasyElytra-1.0.0.jar
+        asset_content_type: application/java-archive
+    
+    # Update the output handling
+    - name: Save upload_url to environment file
+      run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
+    
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
+      with:
+        upload_url: ${{ env.UPLOAD_URL }}
         asset_path: EasyElytra-1.0.0.jar
         asset_name: EasyElytra-1.0.0.jar
         asset_content_type: application/java-archive
