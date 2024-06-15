@@ -1,5 +1,5 @@
 modLoader = "fabric"
-loaderVersion = "[>=0.12.5]"
+loaderVersion = "[>=0.15.11]"
 license = "MIT"
 [[mods]]
 modId = "easyelytra"
