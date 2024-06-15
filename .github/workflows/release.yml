@@ -40,7 +40,7 @@ jobs:
         name: mod-artifact
         path: build/libs/*.jar
 
-  name: create-release
+  create-release:
     needs: build
     runs-on: ubuntu-latest
     
@@ -67,17 +67,6 @@ jobs:
         draft: true
         prerelease: false
     
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: EasyElytra-1.0.0.jar
-        asset_name: EasyElytra-1.0.0.jar
-        asset_content_type: application/java-archive
-    
-    # Update the output handling
     - name: Save upload_url to environment file
       run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
     
