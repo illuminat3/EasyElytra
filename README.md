@@ -2,7 +2,7 @@
 
 ## Description
 
-Fabric 1.20.6 Mod to improve elytra control
+Fabric 1.21 Mod to improve elytra control
 
 ## Requirements
 
