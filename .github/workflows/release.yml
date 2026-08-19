@@ -55,6 +55,12 @@ jobs:
     
     - name: List downloaded artifacts
       run: ls -R .
+
+    - name: Locate the mod jar
+      run: |
+        JAR=$(ls *.jar | grep -Ev -- '-(sources|dev|javadoc)\.jar$' | head -n 1)
+        if [ -z "$JAR" ]; then echo "No mod jar found in the downloaded artifact" >&2; exit 1; fi
+        echo "MOD_JAR=$JAR" >> $GITHUB_ENV
     
     - name: Create GitHub Release
       id: create_release
@@ -76,6 +82,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.PAT }}
       with:
         upload_url: ${{ env.UPLOAD_URL }}
-        asset_path: easyelytra-1.0.0.jar
-        asset_name: easyelytra-1.0.0.jar
+        asset_path: ${{ env.MOD_JAR }}
+        asset_name: ${{ env.MOD_JAR }}
         asset_content_type: application/java-archive
