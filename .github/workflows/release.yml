@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,49 +42,43 @@ jobs:
       with:
         name: mod-artifact
         path: build/libs/*.jar
+        if-no-files-found: error
 
   create-release:
     needs: build
     runs-on: ubuntu-latest
-    
+
+    permissions:
+      contents: write
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
         name: mod-artifact
-    
-    - name: List downloaded artifacts
-      run: ls -R .
+        path: artifacts
 
-    - name: Locate the mod jar
+    - name: List downloaded artifacts
+      run: ls -R artifacts
+
+    - name: Read the Minecraft version
       run: |
-        JAR=$(ls *.jar | grep -Ev -- '-(sources|dev|javadoc)\.jar$' | head -n 1)
-        if [ -z "$JAR" ]; then echo "No mod jar found in the downloaded artifact" >&2; exit 1; fi
-        echo "MOD_JAR=$JAR" >> $GITHUB_ENV
-    
-    - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
+        MC_VERSION=$(grep -E '^minecraft_version=' gradle.properties | cut -d '=' -f2 | tr -d '[:space:]')
+        if [ -z "$MC_VERSION" ]; then
+          echo "minecraft_version not found in gradle.properties" >&2
+          exit 1
+        fi
+        echo "MC_VERSION=$MC_VERSION" >> $GITHUB_ENV
+
+    - name: Create draft release
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: v${{ github.run_number }}
-        release_name: Easy Elytra X.X.X
+        tag_name: v${{ env.MC_VERSION }}
+        name: Easy Elytra ${{ env.MC_VERSION }}
         draft: true
         prerelease: false
-    
-    - name: Save upload_url to environment file
-      run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
-    
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
-      with:
-        upload_url: ${{ env.UPLOAD_URL }}
-        asset_path: ${{ env.MOD_JAR }}
-        asset_name: ${{ env.MOD_JAR }}
-        asset_content_type: application/java-archive
+        files: artifacts/*.jar
+        fail_on_unmatched_files: true
