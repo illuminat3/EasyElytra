@@ -1,36 +1,34 @@
 plugins {
-	id 'fabric-loom' version '1.6.9'
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
-group = 'com.illuminat3'
-version = '1.0.0'
+group = project.maven_group
+version = project.mod_version
+
+base {
+	archivesName = project.archives_base_name
+}
 
 repositories {
 	mavenCentral()
-	maven { url 'https://maven.fabricmc.net/' }
-	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
+	// Minecraft is shipped unobfuscated as of 26.1, so there is no `mappings`
+	// dependency any more - the game already uses the official Mojang names.
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
-
-loom {
-	mixin {
-		defaultRefmapName = "easyelytra.refmap.json"
+		languageVersion = JavaLanguageVersion.of(25)
 	}
 }
 

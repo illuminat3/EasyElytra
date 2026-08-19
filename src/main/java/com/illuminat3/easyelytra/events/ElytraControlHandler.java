@@ -1,56 +1,57 @@
 package com.illuminat3.easyelytra.events;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.phys.Vec3;
 
 public class ElytraControlHandler {
-    public static void onTick(MinecraftClient client) {
+    public static void onTick(Minecraft client) {
         if (client.player != null && client.player.isFallFlying()) {
-            controlElytra(client.player);
+            controlElytra(client.player, client.options);
         }
     }
 
     private static final double speed = 0.05;
 
-    private static void controlElytra(ClientPlayerEntity player) {
+    private static void controlElytra(LocalPlayer player, Options options) {
         double maxSpeed = 2.5;
 
-        if (player.input.pressingForward) {
-            Vec3d forward = Vec3d.fromPolar(player.getPitch(1.0F), player.getYaw(1.0F)).normalize().multiply(speed);
-            player.addVelocity(forward.x, forward.y, forward.z);
+        if (options.keyUp.isDown()) {
+            Vec3 forward = player.getViewVector(1.0F).normalize().scale(speed);
+            player.addDeltaMovement(forward);
         }
-        if (player.input.pressingBack) {
-            Vec3d backward = Vec3d.fromPolar(player.getPitch(1.0F), player.getYaw(1.0F)).normalize().multiply(-speed);
+        if (options.keyDown.isDown()) {
+            Vec3 backward = player.getViewVector(1.0F).normalize().scale(-speed);
             if (isMovingForwardWithVelocity(player)) {
-                player.addVelocity(backward.x, backward.y, backward.z);
+                player.addDeltaMovement(backward);
             }
         }
-        if (player.input.pressingLeft) {
-            player.addVelocity(Math.cos(player.getYaw(1.0F) * Math.PI / 180.0) * speed, 0, Math.sin(player.getYaw(1.0F) * Math.PI / 180.0) * speed);
+        if (options.keyLeft.isDown()) {
+            player.addDeltaMovement(new Vec3(Math.cos(player.getViewYRot(1.0F) * Math.PI / 180.0) * speed, 0, Math.sin(player.getViewYRot(1.0F) * Math.PI / 180.0) * speed));
         }
-        if (player.input.pressingRight) {
-            player.addVelocity(Math.cos(player.getYaw(1.0F) * Math.PI / 180.0) * -speed, 0, Math.sin(player.getYaw(1.0F) * Math.PI / 180.0) * -speed);
+        if (options.keyRight.isDown()) {
+            player.addDeltaMovement(new Vec3(Math.cos(player.getViewYRot(1.0F) * Math.PI / 180.0) * -speed, 0, Math.sin(player.getViewYRot(1.0F) * Math.PI / 180.0) * -speed));
         }
-        if (player.input.jumping) {
-            player.addVelocity(0, speed, 0);
+        if (options.keyJump.isDown()) {
+            player.addDeltaMovement(new Vec3(0, speed, 0));
         }
-        if (player.input.sneaking) {
-            player.addVelocity(0, -speed, 0);
+        if (options.keyShift.isDown()) {
+            player.addDeltaMovement(new Vec3(0, -speed, 0));
         }
 
-        double velocity = Math.sqrt(player.getVelocity().x * player.getVelocity().x + player.getVelocity().z * player.getVelocity().z);
+        double velocity = Math.sqrt(player.getDeltaMovement().x * player.getDeltaMovement().x + player.getDeltaMovement().z * player.getDeltaMovement().z);
         if (velocity > maxSpeed) {
-            player.setVelocity(player.getVelocity().normalize().multiply(maxSpeed));
+            player.setDeltaMovement(player.getDeltaMovement().normalize().scale(maxSpeed));
         }
     }
 
-    private static boolean isMovingForwardWithVelocity(ClientPlayerEntity player) {
-        Vec3d velocity = player.getVelocity();
+    private static boolean isMovingForwardWithVelocity(LocalPlayer player) {
+        Vec3 velocity = player.getDeltaMovement();
         double velocityLength = velocity.length();
-        Vec3d lookDirection = player.getRotationVec(1.0F);
-        Vec3d normalizedVelocity = velocity.normalize();
-        boolean isMovingForward = normalizedVelocity.dotProduct(lookDirection) > 0.99;
+        Vec3 lookDirection = player.getViewVector(1.0F);
+        Vec3 normalizedVelocity = velocity.normalize();
+        boolean isMovingForward = normalizedVelocity.dot(lookDirection) > 0.99;
         boolean hasCorrectVelocity = Math.abs(velocityLength - speed) < 0.001;
 
         return isMovingForward && hasCorrectVelocity;
