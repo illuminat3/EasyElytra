@@ -10,16 +10,16 @@
 		"sources": "https://github.com/illuminat3/EasyElytra"
 	},
 	"license": "MIT",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
-		"main": [
+		"client": [
 			"com.illuminat3.easyelytra.EasyElytraMod"
 		]
 	},
 	"depends": {
-		"fabricloader": ">=0.15.11",
-		"minecraft": "~1.21",
-		"java": ">=21",
-		"fabric": "*"
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
 	}
 }
