@@ -17,9 +17,11 @@ repositories {
 dependencies {
 	// Minecraft is shipped unobfuscated as of 26.1, so there is no `mappings`
 	// dependency any more - the game already uses the official Mojang names.
+	// For the same reason Loom 1.17 dropped the remapping `mod*` configurations;
+	// mod dependencies are declared with plain `implementation`.
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
 tasks.withType(JavaCompile).configureEach {
